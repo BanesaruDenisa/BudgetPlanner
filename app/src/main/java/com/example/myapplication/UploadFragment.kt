@@ -10,15 +10,14 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.example.myapplication.databinding.FragmentAddTransactionBinding
+import com.example.myapplication.databinding.FragmentUploadBinding
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddTransactionFragment : Fragment() {
+class UploadFragment : Fragment() {
 
-    private var _binding: FragmentAddTransactionBinding? = null
+    private var _binding: FragmentUploadBinding? = null
     private val binding get() = _binding!!
 
     private var uri: Uri? = null
@@ -27,75 +26,75 @@ class AddTransactionFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddTransactionBinding.inflate(inflater, container, false)
+        _binding = FragmentUploadBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         dataDao = AppDatabase.getDatabase(requireContext()).dataClassDao()
 
-        // Dropdown spinner setup
+        // Dropdown tip tranzacție
         val adapter = ArrayAdapter.createFromResource(
             requireContext(),
             R.array.transaction_types,
             android.R.layout.simple_spinner_item
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.typeSpinner.adapter = adapter
+        binding.uploadDesc.adapter = adapter
 
-        // Image upload
+        // Imagine
         val getImage = registerForActivityResult(ActivityResultContracts.GetContent()) { selectedUri ->
             selectedUri?.let {
                 uri = it
-                binding.receiptImage.setImageURI(it)
+                binding.uploadImage.setImageURI(it)
             }
         }
 
-        binding.selectImageButton.setOnClickListener {
+        binding.uploadImage.setOnClickListener {
             getImage.launch("image/*")
         }
 
-        // Date picker
+        // Dată
         val calendar = Calendar.getInstance()
-        val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, day ->
-            calendar.set(year, month, day)
-            updateDate(calendar)
+        val dateSetListener = DatePickerDialog.OnDateSetListener { _, y, m, d ->
+            calendar.set(y, m, d)
+            val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.UK)
+            binding.uploadDate.text = sdf.format(calendar.time)
         }
 
-        binding.dateButton.setOnClickListener {
+        binding.buttonDate.setOnClickListener {
             DatePickerDialog(
-                requireContext(),
-                dateSetListener,
+                requireContext(), dateSetListener,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
 
-        // Save transaction
+
         binding.saveButton.setOnClickListener {
-            val type = binding.typeSpinner.selectedItem.toString()
-            val title = binding.titleInput.text.toString().trim()
-            val budgStr = binding.amountInput.text.toString().trim()
-            val date = binding.dateText.text.toString()
+            val title = binding.uploadTitle.text.toString().trim()
+            val desc = binding.uploadDesc.selectedItem.toString()
+            val budgStr = binding.uploadBudg.text.toString().trim()
+            val date = binding.uploadDate.text.toString().trim()
             val imageUri = uri?.let { saveImageLocally(it) } ?: ""
 
+
             if (title.isEmpty() || budgStr.isEmpty() || date.isEmpty()) {
-                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please fill in all fields\"", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val budg = budgStr.toDoubleOrNull()
-            if (budg == null || budg <= 0.0) {
+            if (budg == null ||  budg <= 0) {
                 Toast.makeText(requireContext(), "Amount must be greater than 0", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val item = DataClass(
                 title = title,
-                dataDesc = type, // "Income" or "Expense"
+                dataDesc = desc,
                 dataBudg = budgStr,
                 dataImage = imageUri,
                 dataDate = date
@@ -103,13 +102,8 @@ class AddTransactionFragment : Fragment() {
 
             dataDao.insert(item)
             Toast.makeText(requireContext(), "Transaction saved", Toast.LENGTH_SHORT).show()
-            findNavController().navigateUp()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-    }
-
-    private fun updateDate(calendar: Calendar) {
-        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.UK)
-        binding.dateText.text = sdf.format(calendar.time)
     }
 
     private fun saveImageLocally(uri: Uri): String {

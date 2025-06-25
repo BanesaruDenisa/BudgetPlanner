@@ -10,6 +10,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,6 +27,9 @@ class HomeFragment : Fragment() {
     private lateinit var broadcastReceiver: BroadcastReceiver
     private lateinit var dataDao: DataClassDao
     private var dataList = mutableListOf<DataClass>()
+    private lateinit var incomeTextView: TextView
+    private lateinit var expenseTextView: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -35,15 +40,23 @@ class HomeFragment : Fragment() {
         fab = view.findViewById(R.id.fab)
         searchView = view.findViewById(R.id.search)
         searchView.clearFocus()
+        incomeTextView = view.findViewById(R.id.incomeTotal)
+        expenseTextView = view.findViewById(R.id.expenseTotal)
+
+
 
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         dataDao = AppDatabase.getDatabase(requireContext()).dataClassDao()
         dataList = dataDao.getAll().toMutableList()
         adapter = MyAdapter(requireContext(), dataList) { dataItem ->
-            val intent = Intent(requireContext(), DetailActivity::class.java)
-            intent.putExtra("id", dataItem.id)
-            startActivity(intent)
+            val bundle = Bundle().apply {
+                putInt("id", dataItem.id)
+            }
+            findNavController().navigate(R.id.detailsFragment, bundle)
+
+
         }
+
         recyclerView.adapter = adapter
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -55,10 +68,16 @@ class HomeFragment : Fragment() {
             }
         })
 
+//        fab.setOnClickListener {
+//            val intent = Intent(requireContext(), UploadActivity::class.java)
+//            startActivity(intent)
+//        }
+
         fab.setOnClickListener {
-            val intent = Intent(requireContext(), UploadActivity::class.java)
-            startActivity(intent)
+            findNavController().navigate(R.id.uploadFragment)
         }
+
+
 
         broadcastReceiver = BrodcastRec()
         registerNetworkBroadcast()
@@ -71,6 +90,8 @@ class HomeFragment : Fragment() {
         dataList.clear()
         dataList.addAll(dataDao.getAll())
         adapter.notifyDataSetChanged()
+        updateTotals()
+
     }
 
     private fun searchList(text: String) {
@@ -96,6 +117,21 @@ class HomeFragment : Fragment() {
             e.printStackTrace()
         }
     }
+
+    private fun updateTotals() {
+        val incomeTotal = dataList
+            .filter { it.dataDesc.trim().equals("Income", ignoreCase = true) }
+            .sumOf { it.dataBudg.trim().toIntOrNull() ?: 0 }
+
+        val expenseTotal = dataList
+            .filter { it.dataDesc.trim().equals("Expense", ignoreCase = true) }
+            .sumOf { it.dataBudg.trim().toIntOrNull() ?: 0 }
+
+        incomeTextView.text = "Income: $incomeTotal"
+        expenseTextView.text = "Expense: $expenseTotal"
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

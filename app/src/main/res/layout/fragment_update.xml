@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".UpdateActivity">
+    tools:context=".UpdateFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -52,16 +52,16 @@
                 android:gravity="start|center_vertical"
                 android:textColor="@color/green"/>
 
-            <EditText
+            <Spinner
+                android:id="@+id/updateDesc"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:id="@+id/updateDesc"
-                android:background="@drawable/green_border"
                 android:layout_marginTop="20dp"
+                android:background="@drawable/green_border"
                 android:padding="16dp"
-                android:hint="Enter description"
-                android:gravity="start|center_vertical"
-                android:textColor="@color/green"/>
+                android:spinnerMode="dropdown"
+                android:popupBackground="@android:color/white"/>
+
 
             <EditText
                 android:layout_width="match_parent"

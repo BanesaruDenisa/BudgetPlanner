@@ -11,6 +11,10 @@
     <color name="yellow">#FFD042</color>
     <color name="grey">#B8B6B5</color>
     <color name="bej">#F4D4A7</color>
+    <color name="box_background">#87A7AC</color>
+    <color name="box_border">#000000</color>
+    <color name="income_green">#388E3C</color>
+    <color name="expense_red">#D32F2F</color>
 
 
 </resources>

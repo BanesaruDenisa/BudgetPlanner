@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AddTransactionFragment">
+    tools:context=".UploadFragment">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -28,82 +28,86 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add Transaction"
+                android:text="Upload Image"
                 android:textSize="25sp"
                 android:textAlignment="center"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
             <ImageView
-                android:id="@+id/receiptImage"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:src="@drawable/uploadimg"
+                android:id="@+id/uploadImage"
                 android:layout_marginTop="10dp"
-                android:scaleType="fitXY" />
-
-            <Button
-                android:id="@+id/selectImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Upload receipt"
-                android:layout_marginTop="8dp" />
+                android:scaleType="fitXY"/>
 
             <EditText
-                android:id="@+id/titleInput"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:id="@+id/uploadTitle"
                 android:background="@drawable/green_border"
                 android:layout_marginTop="20dp"
                 android:padding="16dp"
                 android:hint="Enter title"
                 android:gravity="start|center_vertical"
-                android:textColor="@color/green" />
+                android:textColor="@color/green"/>
 
             <Spinner
-                android:id="@+id/typeSpinner"
+                android:id="@+id/uploadDesc"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/green_border"
-                android:padding="8dp" />
+                android:padding="16dp"
+                android:spinnerMode="dropdown"
+                android:layout_gravity="center"
+                android:popupBackground="@android:color/white"/>
+
 
             <EditText
-                android:id="@+id/amountInput"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:id="@+id/uploadBudg"
                 android:background="@drawable/green_border"
                 android:layout_marginTop="20dp"
                 android:padding="16dp"
-                android:hint="Enter amount"
+                android:hint="Enter budget"
                 android:gravity="start|center_vertical"
-                android:textColor="@color/green"
-                android:inputType="numberDecimal" />
+                android:textColor="@color/green"/>
 
             <TextView
-                android:id="@+id/dateText"
+                android:id="@+id/uploadDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="dd/mm/yyyy"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:layout_marginTop="10dp" />
-
+                android:layout_marginTop="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
             <Button
-                android:id="@+id/dateButton"
+                android:id="@+id/buttonDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Choose Date"
                 android:layout_marginTop="10dp"
-                android:gravity="start|center_vertical" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:gravity="start|center_vertical"
+                app:layout_constraintVertical_bias="0.606" />
 
             <Button
-                android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Save"
+                android:id="@+id/saveButton"
                 android:textSize="18sp"
                 android:layout_marginTop="20dp"
-                app:cornerRadius="20dp" />
+                app:cornerRadius = "20dp"/>
 
         </LinearLayout>
 
