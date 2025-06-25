@@ -14,9 +14,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.d("MainActivity", "MainActivity started")
 
-        // LOGIN VERIFICATION
+
+        // Shared pref
         val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
         val isLoggedIn = sharedPref.getBoolean("isLoggedIn", false)
         if (!isLoggedIn) {
@@ -27,10 +27,7 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        Toast.makeText(this, "MainActivity launched", Toast.LENGTH_SHORT).show()
 
-
-        // Setup Navigation Component with BottomNavigationView
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController

@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/img_main">
 
+    <!-- Search bar -->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
@@ -13,20 +14,63 @@
         app:queryHint="Search..."
         android:background="@drawable/green_border" />
 
+    <!-- Income & Expense totals -->
+    <LinearLayout
+        android:id="@+id/summaryContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/incomeTotal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Income: 0"
+            android:textColor="@color/income_green"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@drawable/border_box" />
+
+        <TextView
+            android:id="@+id/expenseTotal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Expense: 0"
+            android:textColor="@color/expense_red"
+            android:gravity="center"
+            android:padding="8dp"
+            android:background="@drawable/border_box"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+
+    <!-- RecyclerView fix: proper scrolling height -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@id/search"
-        android:layout_above="@id/fab" />
+        android:layout_below="@id/summaryContainer"
+        android:layout_above="@id/fab"
+        android:paddingBottom="8dp"
+        android:scrollbars="vertical" />
 
+    <!-- Floating Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
-        android:src="@drawable/baseline_add_24"
-        android:contentDescription="Add" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="80dp"
+        android:contentDescription="Add"
+        android:src="@drawable/baseline_add_24" />
 </RelativeLayout>
