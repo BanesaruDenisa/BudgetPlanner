@@ -3,6 +3,11 @@
 
     <string name="open_nav">Open Navigation Drawer</string>
     <string name="close_nav">Close Navigation Drawer</string>
+    <string-array name="transaction_types">
+        <item>Income</item>
+        <item>Expense</item>
+    </string-array>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="text_about_us">Step 1. Calculate net income,
     which is your take-home pay minus deductions
