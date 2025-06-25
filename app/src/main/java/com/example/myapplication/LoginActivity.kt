@@ -34,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
         signupRedirectText = findViewById(R.id.signUpRedirectText)
         forgotPassword = findViewById(R.id.forgot_password)
 
-        // 🟡 Inițializare Room DAO
+        //  Inițializare Room DAO
         userDao = AppDatabase.getDatabase(this).userDao()
 
         loginButton.setOnClickListener {
@@ -43,9 +43,12 @@ class LoginActivity : AppCompatActivity() {
 
             if (email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 if (pass.isNotEmpty()) {
-                    val user = userDao.authenticate(email, pass) // 🔄 Verificare locală
+                    val user = userDao.authenticate(email, pass) //  Verificare locala
                     if (user != null) {
                         Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+                        val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+                        sharedPref.edit().putBoolean("isLoggedIn", true).apply()
+
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
                     } else {
