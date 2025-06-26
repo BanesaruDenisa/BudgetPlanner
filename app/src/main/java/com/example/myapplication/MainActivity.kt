@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, "MainActivity launched", Toast.LENGTH_SHORT).show()
 
 
-        // Setup Navigation Component with BottomNavigationView
+        // Setup Navigation Component with BottomNavigationView -> updated
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
