@@ -1,7 +1,6 @@
-package com.example.myapplication
+package com.example.myapplication.ui.detail
 
 import android.app.DatePickerDialog
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
@@ -12,6 +11,10 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.myapplication.data.AppDatabase
+import com.example.myapplication.R
+import com.example.myapplication.data.dao.DataClassDao
+import com.example.myapplication.data.model.DataClass
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Calendar

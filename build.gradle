@@ -1,16 +1,3 @@
-buildscript {
-    ext {
-        kotlin_version = '1.8.22' // actualizat pentru compatibilitate cu pluginul Kotlin Android
-    }
-
-    dependencies {
-        classpath 'com.google.gms:google-services:4.3.15'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-    }
-}
-
-
 plugins {
     id 'com.android.application' version '8.0.2' apply false
     id 'com.android.library' version '8.0.2' apply false

@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.main
 
 import android.app.DatePickerDialog
 import android.net.Uri
@@ -11,6 +11,10 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.myapplication.data.AppDatabase
+import com.example.myapplication.R
+import com.example.myapplication.data.dao.DataClassDao
+import com.example.myapplication.data.model.DataClass
 import com.example.myapplication.databinding.FragmentAddTransactionBinding
 import java.io.File
 import java.text.SimpleDateFormat

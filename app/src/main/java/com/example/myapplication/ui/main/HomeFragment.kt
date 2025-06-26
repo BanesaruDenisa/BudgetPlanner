@@ -1,7 +1,6 @@
-package com.example.myapplication
+package com.example.myapplication.ui.main
 
 import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
@@ -14,6 +13,13 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.data.AppDatabase
+import com.example.myapplication.utils.BrodcastRec
+import com.example.myapplication.ui.detail.DetailActivity
+import com.example.myapplication.R
+import com.example.myapplication.ui.upload.UploadActivity
+import com.example.myapplication.data.dao.DataClassDao
+import com.example.myapplication.data.model.DataClass
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class HomeFragment : Fragment() {

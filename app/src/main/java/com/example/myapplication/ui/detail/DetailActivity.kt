@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.detail
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,6 +8,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.myapplication.data.AppDatabase
+import com.example.myapplication.ui.main.MainActivity
+import com.example.myapplication.R
+import com.example.myapplication.data.dao.DataClassDao
 import com.github.clans.fab.FloatingActionButton
 import java.io.File
 

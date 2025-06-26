@@ -6,19 +6,19 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.myapplication.HomeFragment"
+        android:name="com.example.myapplication.ui.main.HomeFragment"
         android:label="Home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/aboutUsFragment"
-        android:name="com.example.myapplication.AboutUsFragment"
+        android:name="com.example.myapplication.ui.main.AboutUsFragment"
         android:label="About Us"
         tools:layout="@layout/fragment_about_us" />
 
     <fragment
         android:id="@+id/logoutFragment"
-        android:name="com.example.myapplication.LogoutFragment"
+        android:name="com.example.myapplication.ui.main.LogoutFragment"
         android:label="Logout"
         tools:layout="@layout/fragment_logout" />
 
