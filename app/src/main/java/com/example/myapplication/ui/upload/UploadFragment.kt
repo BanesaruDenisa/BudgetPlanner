@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.upload
 
 import android.app.DatePickerDialog
 import android.net.Uri
@@ -10,6 +10,10 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.example.myapplication.R
+import com.example.myapplication.data.dao.DataClassDao
+import com.example.myapplication.data.database.AppDatabase
+import com.example.myapplication.data.model.DataClass
 import com.example.myapplication.databinding.FragmentUploadBinding
 import java.io.File
 import java.text.SimpleDateFormat

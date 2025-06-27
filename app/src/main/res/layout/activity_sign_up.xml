@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/money_sign"
-    tools:context=".SignUpActivity">
+    tools:context=".ui.auth.SignUpActivity">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"

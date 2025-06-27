@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.auth
 
 
 import android.content.Intent
@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.example.myapplication.R
 
 class LogoutFragment : Fragment() {
     override fun onCreateView(

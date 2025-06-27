@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.auth
 
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
@@ -12,7 +12,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
+import com.example.myapplication.ui.detail.MainActivity
+import com.example.myapplication.R
+import com.example.myapplication.data.dao.UserDao
+import com.example.myapplication.data.database.AppDatabase
 
 class LoginActivity : AppCompatActivity() {
 
