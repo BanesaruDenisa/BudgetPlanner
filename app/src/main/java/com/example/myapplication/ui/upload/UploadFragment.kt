@@ -1,6 +1,7 @@
-package com.example.myapplication
+package com.example.myapplication.ui.upload
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,10 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import com.example.myapplication.R
+import com.example.myapplication.data.dao.DataClassDao
+import com.example.myapplication.data.database.AppDatabase
+import com.example.myapplication.data.model.DataClass
 import com.example.myapplication.databinding.FragmentUploadBinding
 import java.io.File
 import java.text.SimpleDateFormat
@@ -50,10 +55,7 @@ class UploadFragment : Fragment() {
                 binding.uploadImage.setImageURI(it)
             }
         }
-
-        binding.uploadImage.setOnClickListener {
-            getImage.launch("image/*")
-        }
+        binding.uploadImage.setOnClickListener { getImage.launch("image/*") }
 
         // Dată
         val calendar = Calendar.getInstance()
@@ -62,7 +64,6 @@ class UploadFragment : Fragment() {
             val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.UK)
             binding.uploadDate.text = sdf.format(calendar.time)
         }
-
         binding.buttonDate.setOnClickListener {
             DatePickerDialog(
                 requireContext(), dateSetListener,
@@ -72,7 +73,6 @@ class UploadFragment : Fragment() {
             ).show()
         }
 
-
         binding.saveButton.setOnClickListener {
             val title = binding.uploadTitle.text.toString().trim()
             val desc = binding.uploadDesc.selectedItem.toString()
@@ -80,15 +80,22 @@ class UploadFragment : Fragment() {
             val date = binding.uploadDate.text.toString().trim()
             val imageUri = uri?.let { saveImageLocally(it) } ?: ""
 
-
             if (title.isEmpty() || budgStr.isEmpty() || date.isEmpty()) {
-                Toast.makeText(requireContext(), "Please fill in all fields\"", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             val budg = budgStr.toDoubleOrNull()
-            if (budg == null ||  budg <= 0) {
+            if (budg == null || budg <= 0) {
                 Toast.makeText(requireContext(), "Amount must be greater than 0", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            //  Salvăm userul logat
+            val sharedPref = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val userEmail = sharedPref.getString("loggedInUserEmail", null)
+            if (userEmail == null) {
+                Toast.makeText(requireContext(), "No user logged in", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -97,7 +104,8 @@ class UploadFragment : Fragment() {
                 dataDesc = desc,
                 dataBudg = budgStr,
                 dataImage = imageUri,
-                dataDate = date
+                dataDate = date,
+                userEmail = userEmail
             )
 
             dataDao.insert(item)

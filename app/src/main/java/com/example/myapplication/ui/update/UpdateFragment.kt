@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.update
 
 import android.app.DatePickerDialog
 import android.net.Uri
@@ -10,9 +10,12 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.myapplication.R
+import com.example.myapplication.data.dao.DataClassDao
+import com.example.myapplication.data.database.AppDatabase
+import com.example.myapplication.data.model.DataClass
 import com.example.myapplication.databinding.FragmentUpdateBinding
 import java.io.File
 import java.text.SimpleDateFormat
@@ -27,6 +30,7 @@ class UpdateFragment : Fragment() {
     private var itemId: Int = -1
     private var uri: Uri? = null
     private lateinit var originalImageUri: String
+    private lateinit var userEmail: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -40,21 +44,13 @@ class UpdateFragment : Fragment() {
 
         dataDao = AppDatabase.getDatabase(requireContext()).dataClassDao()
 
-//        itemId = requireActivity().intent.getIntExtra("id", -1)
-//        val item = dataDao.getById(itemId)
-//        if (item == null) {
-//            Toast.makeText(requireContext(), "Item not found", Toast.LENGTH_SHORT).show()
-//            requireActivity().onBackPressedDispatcher.onBackPressed()
-//            return
-//        }
-
-        val itemId = arguments?.getInt("id") ?: -1
+        itemId = arguments?.getInt("id") ?: -1
         if (itemId == -1) {
             Toast.makeText(requireContext(), "ID invalid", Toast.LENGTH_SHORT).show()
             findNavController().popBackStack()
             return
         }
-        val dataDao = AppDatabase.getDatabase(requireContext()).dataClassDao()
+
         val item = dataDao.getById(itemId)
         if (item == null) {
             Toast.makeText(requireContext(), "Item not found", Toast.LENGTH_SHORT).show()
@@ -62,7 +58,7 @@ class UpdateFragment : Fragment() {
             return
         }
 
-
+        userEmail = item.userEmail
 
         binding.updateTitle.setText(item.title)
         binding.updateBudg.setText(item.dataBudg)
@@ -96,19 +92,14 @@ class UpdateFragment : Fragment() {
                 binding.updateImage.setImageURI(it)
             }
         }
+        binding.updateImage.setOnClickListener { getImage.launch("image/*") }
 
-        binding.updateImage.setOnClickListener {
-            getImage.launch("image/*")
-        }
-
-        // Date Picker
         val calendar = Calendar.getInstance()
         val dateBox = DatePickerDialog.OnDateSetListener { _, year, month, day ->
             calendar.set(year, month, day)
             val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.UK)
             binding.updateDate.text = sdf.format(calendar.time)
         }
-
         binding.buttonDate.setOnClickListener {
             DatePickerDialog(
                 requireContext(), dateBox,
@@ -117,7 +108,6 @@ class UpdateFragment : Fragment() {
                 calendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
-
 
         binding.updateButton.setOnClickListener {
             val title = binding.updateTitle.text.toString().trim()
@@ -143,7 +133,8 @@ class UpdateFragment : Fragment() {
                 dataDesc = desc,
                 dataBudg = budgStr,
                 dataImage = imageUri,
-                dataDate = date
+                dataDate = date,
+                userEmail = userEmail
             )
 
             dataDao.update(updatedItem)

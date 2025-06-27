@@ -1,22 +1,17 @@
-package com.example.myapplication
+package com.example.myapplication.ui.auth
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.util.Patterns
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.example.myapplication.R
+import com.example.myapplication.data.model.User
+import com.example.myapplication.data.dao.UserDao
+import com.example.myapplication.data.database.AppDatabase
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -36,7 +31,6 @@ class SignUpActivity : AppCompatActivity() {
         signupButton = findViewById(R.id.signup_button)
         loginRedirectText = findViewById(R.id.loginRedirectText)
 
-        // 🟡 Inițializare Room DAO
         userDao = AppDatabase.getDatabase(this).userDao()
 
         signupButton.setOnClickListener {
@@ -45,19 +39,37 @@ class SignUpActivity : AppCompatActivity() {
 
             if (email.isEmpty()) {
                 signupEmail.error = "Email cannot be empty"
-            } else if (password.isEmpty()) {
-                signupPassword.error = "Password cannot be empty"
-            } else {
-                val newUser = User(email, password)
-                userDao.insert(newUser) //  Salvare locală în Room
-
-                Toast.makeText(this, "SignUp Successful", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, LoginActivity::class.java))
+                return@setOnClickListener
             }
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                signupEmail.error = "Please enter a valid email"
+                return@setOnClickListener
+            }
+
+            if (password.isEmpty()) {
+                signupPassword.error = "Password cannot be empty"
+                return@setOnClickListener
+            }
+
+            //  Verificăm dacă userul există deja
+            val existing = userDao.authenticate(email, password)
+            if (existing != null) {
+                Toast.makeText(this, "User already exists", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val newUser = User(email, password)
+            userDao.insert(newUser)
+
+            Toast.makeText(this, "SignUp Successful", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
 
         loginRedirectText.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.menu
 
 
 import android.net.Uri
@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.MediaController
 import android.widget.VideoView
 import androidx.fragment.app.Fragment
+import com.example.myapplication.R
 
 class AboutUsFragment : Fragment() {
     override fun onCreateView(

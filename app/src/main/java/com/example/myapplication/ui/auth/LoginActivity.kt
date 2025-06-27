@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.auth
 
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
@@ -12,7 +12,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
+import com.example.myapplication.MainActivity
+import com.example.myapplication.R
+import com.example.myapplication.data.dao.UserDao
+import com.example.myapplication.data.database.AppDatabase
 
 class LoginActivity : AppCompatActivity() {
 
@@ -34,33 +37,42 @@ class LoginActivity : AppCompatActivity() {
         signupRedirectText = findViewById(R.id.signUpRedirectText)
         forgotPassword = findViewById(R.id.forgot_password)
 
-        //  Inițializare Room DAO
+        // Inițializare Room DAO
         userDao = AppDatabase.getDatabase(this).userDao()
 
         loginButton.setOnClickListener {
-            val email = loginEmail.text.toString()
-            val pass = loginPassword.text.toString()
+            val email = loginEmail.text.toString().trim()
+            val pass = loginPassword.text.toString().trim()
 
-            if (email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                if (pass.isNotEmpty()) {
-                    val user = userDao.authenticate(email, pass) //  Verificare locala
-                    if (user != null) {
-                        Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
-                        val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
-                        sharedPref.edit().putBoolean("isLoggedIn", true).apply()
+            if (email.isEmpty()) {
+                loginEmail.error = "Email cannot be empty"
+                return@setOnClickListener
+            }
 
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
-                    } else {
-                        Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    loginPassword.error = "Empty fields are not allowed"
-                }
-            } else if (email.isEmpty()) {
-                loginEmail.error = "Empty fields are not allowed"
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                loginEmail.error = "Please enter a valid email"
+                return@setOnClickListener
+            }
+
+            if (pass.isEmpty()) {
+                loginPassword.error = "Password cannot be empty"
+                return@setOnClickListener
+            }
+
+            val user = userDao.authenticate(email, pass)
+            if (user != null) {
+                // ✅ Salvăm și emailul logat în SharedPreferences
+                val sharedPref = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+                sharedPref.edit()
+                    .putBoolean("isLoggedIn", true)
+                    .putString("loggedInUserEmail", user.email)
+                    .apply()
+
+                Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
             } else {
-                loginEmail.error = "Please enter correct email"
+                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -77,9 +89,9 @@ class LoginActivity : AppCompatActivity() {
             val dialog = builder.create()
 
             dialogView.findViewById<View>(R.id.btnReset).setOnClickListener {
-                val userEmail = emailBox.text.toString()
+                val userEmail = emailBox.text.toString().trim()
 
-                if (TextUtils.isEmpty(userEmail) || !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+                if (userEmail.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
                     Toast.makeText(this, "Enter your registered email id", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }

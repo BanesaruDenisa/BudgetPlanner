@@ -1,8 +1,7 @@
-package com.example.myapplication
+package com.example.myapplication.ui.menu
 
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Build
@@ -16,6 +15,12 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.R
+import com.example.myapplication.adapter.MyAdapter
+import com.example.myapplication.data.dao.DataClassDao
+import com.example.myapplication.data.database.AppDatabase
+import com.example.myapplication.data.model.DataClass
+import com.example.myapplication.utils.BrodcastRec
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class HomeFragment : Fragment() {
@@ -30,6 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var incomeTextView: TextView
     private lateinit var expenseTextView: TextView
 
+    private var loggedInUserEmail: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -43,41 +49,38 @@ class HomeFragment : Fragment() {
         incomeTextView = view.findViewById(R.id.incomeTotal)
         expenseTextView = view.findViewById(R.id.expenseTotal)
 
-
-
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 1)
         dataDao = AppDatabase.getDatabase(requireContext()).dataClassDao()
-        dataList = dataDao.getAll().toMutableList()
+
+        //  Citim user-ul logat din SharedPreferences
+        val sharedPref = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        loggedInUserEmail = sharedPref.getString("loggedInUserEmail", null)
+
+        if (loggedInUserEmail != null) {
+            dataList = dataDao.getAllForUser(loggedInUserEmail!!).toMutableList()
+        } else {
+            dataList = mutableListOf()
+        }
+
         adapter = MyAdapter(requireContext(), dataList) { dataItem ->
             val bundle = Bundle().apply {
                 putInt("id", dataItem.id)
             }
             findNavController().navigate(R.id.detailsFragment, bundle)
-
-
         }
-
         recyclerView.adapter = adapter
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean = false
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 newText?.let { searchList(it) }
                 return true
             }
         })
 
-//        fab.setOnClickListener {
-//            val intent = Intent(requireContext(), UploadActivity::class.java)
-//            startActivity(intent)
-//        }
-
         fab.setOnClickListener {
             findNavController().navigate(R.id.uploadFragment)
         }
-
-
 
         broadcastReceiver = BrodcastRec()
         registerNetworkBroadcast()
@@ -87,11 +90,18 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        dataList.clear()
-        dataList.addAll(dataDao.getAll())
+        refreshData()
+    }
+
+    private fun refreshData() {
+        if (loggedInUserEmail != null) {
+            dataList.clear()
+            dataList.addAll(dataDao.getAllForUser(loggedInUserEmail!!))
+        } else {
+            dataList.clear()
+        }
         adapter.notifyDataSetChanged()
         updateTotals()
-
     }
 
     private fun searchList(text: String) {
@@ -130,8 +140,6 @@ class HomeFragment : Fragment() {
         incomeTextView.text = "Income: $incomeTotal"
         expenseTextView.text = "Expense: $expenseTotal"
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

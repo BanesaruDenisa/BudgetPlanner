@@ -1,11 +1,15 @@
-package com.example.myapplication
+package com.example.myapplication.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.myapplication.data.model.DataClass
+import com.example.myapplication.data.dao.DataClassDao
+import com.example.myapplication.data.model.User
+import com.example.myapplication.data.dao.UserDao
 
-@Database(entities = [User::class, DataClass::class], version = 1)
+@Database(entities = [User::class, DataClass::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun dataClassDao(): DataClassDao
@@ -19,7 +23,10 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "budget_planner_db"
-                ).allowMainThreadQueries().build()
+                )
+                    .fallbackToDestructiveMigration()  //  șterge și regenerează schema
+                    .allowMainThreadQueries()
+                    .build()
                 INSTANCE = instance
                 instance
             }
